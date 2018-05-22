@@ -6,20 +6,27 @@ public class TestItem {
     private String hospitalName;
     private int testPrice;
     private String hospitalImageUrl;
+    private boolean testSelected;
+    private String hospitalUid;
+    private String testId;
 
-    public TestItem(String testName, String hospitalName, int testPrice, String hospitalImageUrl) {
+    public TestItem(String testName, String hospitalName, int testPrice, String hospitalUid, String testId, String hospitalImageUrl) {
         this.testName = testName;
         this.hospitalName = hospitalName;
         this.testPrice = testPrice;
         this.hospitalImageUrl = hospitalImageUrl;
+        this.testSelected = false;
+        this.hospitalUid = hospitalUid;
+        this.testId = testId;
     }
 
-
-    public TestItem(String testName, String hospitalName, int testPrice) {
+    public TestItem(String testName, String hospitalName, int testPrice, String hospitalUid, String testId) {
         this.testName = testName;
         this.hospitalName = hospitalName;
         this.testPrice = testPrice;
         this.hospitalImageUrl = "";
+        this.hospitalUid = hospitalUid;
+        this.testId = testId;
     }
 
     public String getTestName() {
@@ -52,5 +59,29 @@ public class TestItem {
 
     public void setHospitalImageUrl(String hospitalImageUrl) {
         this.hospitalImageUrl = hospitalImageUrl;
+    }
+
+    public boolean isTestSelected() {
+        return testSelected;
+    }
+
+    public void setTestSelected(boolean testSelected) {
+        this.testSelected = testSelected;
+    }
+
+    public String getHospitalUid() {
+        return hospitalUid;
+    }
+
+    public void setHospitalUid(String hospitalUid) {
+        this.hospitalUid = hospitalUid;
+    }
+
+    public String getTestId() {
+        return testId;
+    }
+
+    public void setTestId(String testId) {
+        this.testId = testId;
     }
 }

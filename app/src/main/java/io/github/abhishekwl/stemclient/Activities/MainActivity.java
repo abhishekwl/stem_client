@@ -1,8 +1,8 @@
 package io.github.abhishekwl.stemclient.Activities;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -21,11 +20,15 @@ import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.github.abhishekwl.stemclient.Adapters.MainViewPagerAdapter;
+import io.github.abhishekwl.stemclient.Fragments.TestFragment;
+import io.github.abhishekwl.stemclient.Models.TestItem;
 import io.github.abhishekwl.stemclient.R;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,8 +44,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindColor(android.R.color.white) int colorWhite;
 
     private Unbinder unbinder;
-    private SearchView testsSearchView;
     private FirebaseAuth firebaseAuth;
+    private TestFragment testFragment;
+    private MainViewPagerAdapter mainViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +77,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeTabLayoutAndViewPager() {
-        viewPager.setAdapter(new MainViewPagerAdapter(getSupportFragmentManager()));
+        mainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(mainViewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) tabLayout.setElevation(8f);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_local_hospital_black_24dp);
@@ -99,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+        testFragment = (TestFragment) mainViewPagerAdapter.getItem(0);
     }
 
     private void initializeNavigationDrawer() {
@@ -114,35 +120,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        testsSearchView = (SearchView) searchItem.getActionView();
-        testsSearchView.setQueryHint("Search tests");
-        if (searchManager!=null) testsSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        testsSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (!testsSearchView.isIconified()) testsSearchView.setIconified(true);
-                Log.v("SUBMIT", query);
-                searchItem.collapseActionView();
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Log.v("SEARCH_VIEW", newText);
-                return false;
-            }
-        });
         return true;
+    }
+
+    private class ExtractSelectedTests extends AsyncTask<ArrayList<TestItem>, Void, ArrayList<String>> {
+
+        @Override
+        protected ArrayList<String> doInBackground(ArrayList<TestItem>... arrayLists) {
+            ArrayList<TestItem> testItemArrayList = arrayLists[0];
+            ArrayList<String> testIdArrayList = new ArrayList<>();
+            for (TestItem testItem : testItemArrayList) {
+                Log.v(testItem.getTestName(), String.valueOf(testItem.isTestSelected()));
+                if (testItem.isTestSelected()) testIdArrayList.add(testItem.getTestId());
+            }
+            return testIdArrayList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> strings) {
+            super.onPostExecute(strings);
+            Intent searchIntent = new Intent(MainActivity.this, SearchActivity.class);
+            searchIntent.putStringArrayListExtra("SELECTED_TEST_IDS", strings);
+            startActivity(searchIntent);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                viewPager.setCurrentItem(0, true);
-                tabLayout.getTabAt(0).select();
+                new ExtractSelectedTests().execute(testFragment.getTestItemArrayList());
                 break;
         }
         return super.onOptionsItemSelected(item);
