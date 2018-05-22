@@ -31,6 +31,15 @@
         <activity
             android:name=".Activities.MainActivity"
             android:theme="@style/FullscreenAppTheme" />
+        <activity
+            android:label="Search"
+            android:parentActivityName=".Activities.MainActivity"
+            android:name=".Activities.SearchActivity"
+            android:theme="@style/SearchActivityTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
