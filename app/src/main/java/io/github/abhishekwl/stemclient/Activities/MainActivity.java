@@ -1,5 +1,6 @@
 package io.github.abhishekwl.stemclient.Activities;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Build;
@@ -114,8 +115,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         final MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         testsSearchView = (SearchView) searchItem.getActionView();
         testsSearchView.setQueryHint("Search tests");
+        if (searchManager!=null) testsSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         testsSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
