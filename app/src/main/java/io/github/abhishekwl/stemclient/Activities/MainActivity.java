@@ -139,9 +139,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         protected void onPostExecute(ArrayList<String> strings) {
             super.onPostExecute(strings);
-            Intent searchIntent = new Intent(MainActivity.this, SearchActivity.class);
-            searchIntent.putStringArrayListExtra("SELECTED_TEST_IDS", strings);
-            startActivity(searchIntent);
         }
     }
 
