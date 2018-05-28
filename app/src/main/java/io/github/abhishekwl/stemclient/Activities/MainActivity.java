@@ -2,25 +2,18 @@ package io.github.abhishekwl.stemclient.Activities;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.os.AsyncTask;
+import android.icu.util.Currency;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindColor;
 import butterknife.BindView;
@@ -28,17 +21,13 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.github.abhishekwl.stemclient.Adapters.MainViewPagerAdapter;
 import io.github.abhishekwl.stemclient.Fragments.TestFragment;
-import io.github.abhishekwl.stemclient.Models.TestItem;
 import io.github.abhishekwl.stemclient.R;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.mainToolbar) Toolbar mainToolbar;
-    @BindView(R.id.drawer_layout) DrawerLayout drawerLayout;
-    @BindView(R.id.nav_view) NavigationView navigationView;
     @BindView(R.id.mainTabLayout) TabLayout tabLayout;
     @BindView(R.id.mainViewPager) ViewPager viewPager;
-
+    public static Locale deviceLocale;
     @BindColor(R.color.colorAccentDark) int colorAccentDark;
     @BindColor(R.color.colorTabUnselected) int colorTabUnselected;
     @BindColor(android.R.color.white) int colorWhite;
@@ -47,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FirebaseAuth firebaseAuth;
     private TestFragment testFragment;
     private MainViewPagerAdapter mainViewPagerAdapter;
+    public static Currency currency;
+    @BindView(R.id.mainToolbar)
+    android.support.v7.widget.Toolbar mainToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,25 +50,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initializeViews() {
-        initializeNavigationDrawer();
+        deviceLocale = Locale.getDefault();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) mainToolbar.setElevation(0f);
+        setSupportActionBar(mainToolbar);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            currency = Currency.getInstance(deviceLocale);
         initializeTabLayoutAndViewPager();
         initializeFirebase();
     }
 
     private void initializeFirebase() {
         firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser()==null) {
-                    startActivity(new Intent(MainActivity.this, SignInActivity.class));
-                    finish();
-                }
+        firebaseAuth.addAuthStateListener(firebaseAuth -> {
+            if (firebaseAuth.getCurrentUser() == null) {
+                startActivity(new Intent(MainActivity.this, SignInActivity.class));
+                finish();
             }
         });
     }
 
     private void initializeTabLayoutAndViewPager() {
+        getSupportActionBar().setElevation(8f);
         mainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mainViewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -107,77 +101,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         testFragment = (TestFragment) mainViewPagerAdapter.getItem(0);
     }
 
-    private void initializeNavigationDrawer() {
-        setSupportActionBar(mainToolbar);
-        getSupportActionBar().setTitle("");
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayout, mainToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) getWindow().setStatusBarColor(colorAccentDark);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-    private class ExtractSelectedTests extends AsyncTask<ArrayList<TestItem>, Void, ArrayList<String>> {
-
-        @Override
-        protected ArrayList<String> doInBackground(ArrayList<TestItem>... arrayLists) {
-            ArrayList<TestItem> testItemArrayList = arrayLists[0];
-            ArrayList<String> testIdArrayList = new ArrayList<>();
-            for (TestItem testItem : testItemArrayList) {
-                Log.v(testItem.getTestName(), String.valueOf(testItem.isTestSelected()));
-                if (testItem.isTestSelected()) testIdArrayList.add(testItem.getTestId());
-            }
-            return testIdArrayList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<String> strings) {
-            super.onPostExecute(strings);
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                new ExtractSelectedTests().execute(testFragment.getTestItemArrayList());
+                startActivity(new Intent(MainActivity.this, SearchTestsActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) drawerLayout.closeDrawer(GravityCompat.START);
-        else super.onBackPressed();
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     @Override

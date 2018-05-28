@@ -29,8 +29,14 @@
             android:name=".Activities.SignInActivity"
             android:theme="@style/FullscreenAppTheme" />
         <activity
+            android:label=""
             android:name=".Activities.MainActivity"
-            android:theme="@style/FullscreenAppTheme" />
+            android:theme="@style/MainActivityTheme" />
+        <activity
+            android:name=".Activities.SearchTestsActivity"
+            android:label="Search"
+            android:parentActivityName=".Activities.SearchTestsActivity"
+            android:theme="@style/SearchActivityTheme" />
     </application>
 
 </manifest>

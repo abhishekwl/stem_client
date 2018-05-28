@@ -23,6 +23,7 @@ public class SplashActivity extends AppCompatActivity {
     private Unbinder unbinder;
     private final int SPLASH_DELAY_LENGTH = 1500;
     private FirebaseAuth firebaseAuth;
+    private Intent nextIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +38,13 @@ public class SplashActivity extends AppCompatActivity {
     private void initializeViews() {
         Glide.with(getApplicationContext()).load(R.drawable.logo).into(logoImageView);
         firebaseAuth = FirebaseAuth.getInstance();
+        nextIntent = new Intent(SplashActivity.this, MainActivity.class);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(SplashActivity.this, SignInActivity.class));
-                finish();
-            }
+        new Handler().postDelayed(() -> {
+            if (firebaseAuth.getCurrentUser() == null)
+                nextIntent = new Intent(SplashActivity.this, SignInActivity.class);
+            startActivity(nextIntent);
+            finish();
         }, SPLASH_DELAY_LENGTH);
     }
 

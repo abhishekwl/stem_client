@@ -1,9 +1,11 @@
 package io.github.abhishekwl.stemclient.Fragments;
 
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,16 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.github.abhishekwl.stemclient.Activities.MainActivity;
 import io.github.abhishekwl.stemclient.Adapters.TestsRecyclerViewAdapter;
 import io.github.abhishekwl.stemclient.Models.TestItem;
 import io.github.abhishekwl.stemclient.R;
@@ -125,33 +128,35 @@ public class TestFragment extends Fragment {
         protected void onPostExecute(ArrayList<TestItem> testItems) {
             super.onPostExecute(testItems);
             String dialogBody = "";
+            int totalCost = 0;
             for (int i = 0; i < testItems.size(); i++) {
                 TestItem currentTestItem = testItems.get(i);
+                totalCost += currentTestItem.getTestPrice();
                 dialogBody = dialogBody.concat((i + 1) + ". " + currentTestItem.getTestName() + " (\u20b9 " + Integer.toString(currentTestItem.getTestPrice()) + ")\n");
                 Log.v("DIALOG_BODY", dialogBody);
             }
+            dialogBody += "\nTOTAL COST = " + (MainActivity.currency == null ? "\u20b9" : MainActivity.currency.toString()) + " " + totalCost;
 
-            materialDialog = new MaterialDialog.Builder(getActivity())
-                    .title("SELECTED TESTS")
-                    .content(dialogBody)
-                    .positiveText("PROCEED")
-                    .negativeText("CANCEL")
-                    .titleColor(colorPrimary)
-                    .positiveColor(colorPrimary)
-                    .negativeColor(colorAccent)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+            if (testItems.isEmpty())
+                Snackbar.make(testsRecyclerView, "Please select at least one test.", Snackbar.LENGTH_SHORT).show();
+            else {
+                materialDialog = new MaterialDialog.Builder(Objects.requireNonNull(getActivity()))
+                        .title("SELECTED TESTS")
+                        .content(dialogBody)
+                        .positiveText("PROCEED")
+                        .negativeText("CANCEL")
+                        .titleColor(colorPrimary)
+                        .positiveColor(colorPrimary)
+                        .negativeColor(colorAccent)
+                        .contentColor(Color.BLACK)
+                        .onPositive((dialog, which) -> {
 
-                        }
-                    })
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        })
+                        .onNegative((dialog, which) -> {
                             if (dialog.isShowing()) dialog.dismiss();
-                        }
-                    })
-                    .show();
+                        })
+                        .show();
+            }
         }
     }
 
