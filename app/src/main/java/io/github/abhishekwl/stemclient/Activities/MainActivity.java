@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.mainTabLayout) TabLayout tabLayout;
     @BindView(R.id.mainViewPager) ViewPager viewPager;
     public static Locale deviceLocale;
-    @BindColor(R.color.colorAccentDark) int colorAccentDark;
     @BindColor(R.color.colorTabUnselected) int colorTabUnselected;
     @BindColor(android.R.color.white) int colorWhite;
 
@@ -38,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private MainViewPagerAdapter mainViewPagerAdapter;
     public static Currency currency;
     @BindView(R.id.mainToolbar)
+    @BindColor(R.color.colorAccentDark)
+    int colorAccentDark;
     android.support.v7.widget.Toolbar mainToolbar;
 
     @Override
