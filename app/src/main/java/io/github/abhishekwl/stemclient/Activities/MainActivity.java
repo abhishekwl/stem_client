@@ -15,13 +15,13 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.github.abhishekwl.stemclient.Adapters.MainViewPagerAdapter;
-import io.github.abhishekwl.stemclient.Fragments.TestFragment;
 import io.github.abhishekwl.stemclient.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
     @BindColor(R.color.colorAccentDark) int colorAccentDark;
 
     private Unbinder unbinder;
-    private FirebaseAuth firebaseAuth;
-    private TestFragment testFragment;
-    private MainViewPagerAdapter mainViewPagerAdapter;
     public static Currency currency;
     public static Locale deviceLocale;
 
@@ -60,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeFirebase() {
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.addAuthStateListener(firebaseAuth -> {
+        FirebaseAuth firebaseAuth1 = FirebaseAuth.getInstance();
+        firebaseAuth1.addAuthStateListener(firebaseAuth -> {
             if (firebaseAuth.getCurrentUser() == null) {
                 startActivity(new Intent(MainActivity.this, SignInActivity.class));
                 finish();
@@ -70,35 +67,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeTabLayoutAndViewPager() {
-        getSupportActionBar().setElevation(8f);
-        mainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
+        Objects.requireNonNull(getSupportActionBar()).setElevation(8f);
+        MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mainViewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) tabLayout.setElevation(8f);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_local_hospital_black_24dp);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_history_black_24dp);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_person_black_24dp);
-        tabLayout.getTabAt(3).setIcon(R.drawable.ic_info_outline_black_24dp);
-        tabLayout.getTabAt(0).getIcon().setColorFilter(colorWhite, PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(1).getIcon().setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(2).getIcon().setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(3).getIcon().setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_local_hospital_black_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_history_black_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.ic_person_black_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.ic_info_outline_black_24dp);
+        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(0)).getIcon()).setColorFilter(colorWhite, PorterDuff.Mode.SRC_IN);
+        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(1)).getIcon()).setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
+        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(2)).getIcon()).setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
+        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(3)).getIcon()).setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                tab.getIcon().setColorFilter(colorWhite, PorterDuff.Mode.SRC_IN);
+                Objects.requireNonNull(tab.getIcon()).setColorFilter(colorWhite, PorterDuff.Mode.SRC_IN);
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.getIcon().setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
+                Objects.requireNonNull(tab.getIcon()).setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
-        testFragment = (TestFragment) mainViewPagerAdapter.getItem(0);
     }
 
     @Override

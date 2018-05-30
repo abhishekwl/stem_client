@@ -128,14 +128,15 @@ public class TestFragment extends Fragment {
         protected void onPostExecute(ArrayList<TestItem> testItems) {
             super.onPostExecute(testItems);
             String dialogBody = "";
+            String currencyCode = MainActivity.currency == null ? "\u20b9": MainActivity.currency.toString();
             int totalCost = 0;
             for (int i = 0; i < testItems.size(); i++) {
                 TestItem currentTestItem = testItems.get(i);
                 totalCost += currentTestItem.getTestPrice();
-                dialogBody = dialogBody.concat((i + 1) + ". " + currentTestItem.getTestName() + " (\u20b9 " + Integer.toString(currentTestItem.getTestPrice()) + ")\n");
+                dialogBody = dialogBody.concat((i + 1) + ". " + currentTestItem.getTestName() +" ("+currencyCode+" "+Integer.toString(currentTestItem.getTestPrice())+")\n");
                 Log.v("DIALOG_BODY", dialogBody);
             }
-            dialogBody += "\nTOTAL COST = " + (MainActivity.currency == null ? "\u20b9" : MainActivity.currency.toString()) + " " + totalCost;
+            dialogBody += "\nTOTAL COST = "+currencyCode+" " + totalCost;
 
             if (testItems.isEmpty())
                 Snackbar.make(testsRecyclerView, "Please select at least one test.", Snackbar.LENGTH_SHORT).show();
@@ -158,10 +159,6 @@ public class TestFragment extends Fragment {
                         .show();
             }
         }
-    }
-
-    public ArrayList<TestItem> getTestItemArrayList() {
-        return testItemArrayList;
     }
 
     @OnClick(R.id.testsNextButton)
