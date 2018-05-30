@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -27,18 +28,17 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.mainTabLayout) TabLayout tabLayout;
     @BindView(R.id.mainViewPager) ViewPager viewPager;
-    public static Locale deviceLocale;
-    @BindColor(R.color.colorAccentDark) int colorAccentDark;
     @BindColor(R.color.colorTabUnselected) int colorTabUnselected;
     @BindColor(android.R.color.white) int colorWhite;
+    @BindView(R.id.mainToolbar) Toolbar mainToolbar;
+    @BindColor(R.color.colorAccentDark) int colorAccentDark;
 
     private Unbinder unbinder;
     private FirebaseAuth firebaseAuth;
     private TestFragment testFragment;
     private MainViewPagerAdapter mainViewPagerAdapter;
     public static Currency currency;
-    @BindView(R.id.mainToolbar)
-    android.support.v7.widget.Toolbar mainToolbar;
+    public static Locale deviceLocale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
