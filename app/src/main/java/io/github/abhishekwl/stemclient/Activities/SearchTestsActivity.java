@@ -9,6 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ProgressBar;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class SearchTestsActivity extends AppCompatActivity {
     @BindView(R.id.searchTestsRecyclerView) RecyclerView searchTestsRecyclerView;
     @BindView(R.id.searcTestsProgressBar) ProgressBar progressBar;
     @BindView(R.id.searchTestsNextFAB) FloatingActionButton searchTestsNextFAB;
+    @BindView(R.id.searchTestsFloatingSearchView) FloatingSearchView floatingSearchView;
     @BindColor(R.color.colorPrimary) int colorPrimary;
     @BindColor(R.color.colorTextDark) int colorTextDark;
     @BindDrawable(R.drawable.ic_arrow_back_black_24dp) Drawable backIconDrawable;
@@ -48,6 +51,33 @@ public class SearchTestsActivity extends AppCompatActivity {
     private void initializeViews() {
         firebaseAuth = FirebaseAuth.getInstance();
         initializeRecyclerView();
+        initializeSearchView();
+    }
+
+    private void initializeSearchView() {
+        floatingSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            @Override
+            public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+                TestItem testItem = (TestItem) searchSuggestion;
+            }
+
+            @Override
+            public void onSearchAction(String currentQuery) {
+
+            }
+        });
+        floatingSearchView.setOnQueryChangeListener((oldQuery, newQuery) -> {
+            if (!oldQuery.equals("") && newQuery.equals("")) {
+                floatingSearchView.clearSuggestions();
+                floatingSearchView.hideProgress();
+            }
+            else {
+                floatingSearchView.showProgress();
+                testsRecyclerViewAdapter.getCustomFilter().filter(newQuery);
+                floatingSearchView.hideProgress();
+                floatingSearchView.swapSuggestions(testItemArrayList);
+            }
+        });
     }
 
     private void initializeRecyclerView() {

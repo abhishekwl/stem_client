@@ -6,8 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".Activities.SearchTestsActivity">
 
+    <com.arlib.floatingsearchview.FloatingSearchView
+        android:id="@+id/searchTestsFloatingSearchView"
+        app:floatingSearch_searchBarMarginLeft="4dp"
+        app:floatingSearch_searchBarMarginRight="4dp"
+        app:floatingSearch_searchBarMarginTop="4dp"
+        app:floatingSearch_searchHint="Search Tests"
+        app:floatingSearch_hintTextColor="@color/colorTextDark"
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"
+        app:floatingSearch_leftActionMode="showSearch"
+        app:floatingSearch_menuItemIconColor="@color/colorPrimary"
+        app:floatingSearch_leftActionColor="@color/colorPrimary"
+        app:floatingSearch_clearBtnColor="@color/colorPrimary"
+        app:floatingSearch_viewSearchInputTextColor="@android:color/black"
+        app:floatingSearch_viewTextColor="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </com.arlib.floatingsearchview.FloatingSearchView>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/searchTestsRecyclerView"
+        android:layout_below="@id/searchTestsFloatingSearchView"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
