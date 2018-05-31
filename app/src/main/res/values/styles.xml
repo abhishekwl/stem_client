@@ -13,21 +13,25 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="SearchActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorAccent</item>
-        <item name="colorPrimaryDark">@color/colorAccentDark</item>
+    <style name="SearchActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorBackground</item>
+        <item name="colorPrimaryDark">@color/colorTabUnselected</item>
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="MainActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/colorAccent</item>
-        <item name="colorPrimaryDark">@color/colorAccentDark</item>
+        <item name="colorPrimary">@color/colorBackground</item>
+        <item name="colorPrimaryDark">@color/colorTabUnselected</item>
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="DotsDarkTheme" parent="Theme.AppCompat.NoActionBar" >
+        <item name="android:textColorSecondary">@color/colorTextDark</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

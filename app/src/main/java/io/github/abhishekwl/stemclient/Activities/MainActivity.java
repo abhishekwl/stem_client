@@ -2,6 +2,7 @@ package io.github.abhishekwl.stemclient.Activities;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.icu.util.Currency;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,9 +29,12 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.mainTabLayout) TabLayout tabLayout;
     @BindView(R.id.mainViewPager) ViewPager viewPager;
+    @BindView(R.id.mainToolbar) Toolbar mainToolbar;
     @BindColor(R.color.colorTabUnselected) int colorTabUnselected;
     @BindColor(android.R.color.white) int colorWhite;
-    @BindView(R.id.mainToolbar) Toolbar mainToolbar;
+    @BindColor(R.color.colorPrimary) int colorPrimary;
+    @BindColor(R.color.colorTextLight) int colorTextLight;
+    @BindColor(R.color.colorTextDark) int colorTextDark;
     @BindColor(R.color.colorAccentDark) int colorAccentDark;
 
     private Unbinder unbinder;
@@ -76,19 +80,19 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_history_black_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.ic_person_black_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.ic_info_outline_black_24dp);
-        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(0)).getIcon()).setColorFilter(colorWhite, PorterDuff.Mode.SRC_IN);
-        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(1)).getIcon()).setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
-        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(2)).getIcon()).setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
-        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(3)).getIcon()).setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
+        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(0)).getIcon()).setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN);
+        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(1)).getIcon()).setColorFilter(colorTextLight, PorterDuff.Mode.SRC_IN);
+        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(2)).getIcon()).setColorFilter(colorTextLight, PorterDuff.Mode.SRC_IN);
+        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(3)).getIcon()).setColorFilter(colorTextLight, PorterDuff.Mode.SRC_IN);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Objects.requireNonNull(tab.getIcon()).setColorFilter(colorWhite, PorterDuff.Mode.SRC_IN);
+                Objects.requireNonNull(tab.getIcon()).setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN);
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                Objects.requireNonNull(tab.getIcon()).setColorFilter(colorTabUnselected, PorterDuff.Mode.SRC_IN);
+                Objects.requireNonNull(tab.getIcon()).setColorFilter(colorTextLight, PorterDuff.Mode.SRC_IN);
             }
 
             @Override
@@ -100,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem menuItem = menu.getItem(0);
+        Drawable icon = menuItem.getIcon();
+        if (icon!=null) icon.setColorFilter(colorTextDark, PorterDuff.Mode.SRC_IN);
         return true;
     }
 
