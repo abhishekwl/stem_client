@@ -2,9 +2,7 @@ package io.github.abhishekwl.stemclient.Models;
 
 import android.os.Parcel;
 
-import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
-
-public class TestItem implements SearchSuggestion {
+public class TestItem {
 
     private String testName;
     private String hospitalName;
@@ -113,31 +111,4 @@ public class TestItem implements SearchSuggestion {
     public void setHospitalLongitude(double hospitalLongitude) {
         this.hospitalLongitude = hospitalLongitude;
     }
-
-    @Override
-    public String getBody() {
-        return testName;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(testName);
-    }
-
-    public static final Creator<TestItem> CREATOR = new Creator<TestItem>() {
-        @Override
-        public TestItem createFromParcel(Parcel source) {
-            return new TestItem(source);
-        }
-
-        @Override
-        public TestItem[] newArray(int size) {
-            return new TestItem[size];
-        }
-    };
 }

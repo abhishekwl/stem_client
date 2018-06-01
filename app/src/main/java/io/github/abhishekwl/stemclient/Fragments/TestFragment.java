@@ -80,7 +80,7 @@ public class TestFragment extends Fragment {
 
         @Override
         protected ArrayList<TestItem> doInBackground(Void... voids) {
-            testItemArrayList = new ArrayList<>();
+            ArrayList<TestItem> testItemArrayList = new ArrayList<>();
             testItemArrayList.add(new TestItem("Glucose Test", "Test Hospital 1", 150, "123", "123", 12.77, 77.87));
             testItemArrayList.add(new TestItem("Platelets Test", "Test Hospital 1", 250, "123", "123",12.77, 77.87));
             testItemArrayList.add(new TestItem("Urine Test", "Test Hospital 1", 350, "123", "123",12.77, 77.87));

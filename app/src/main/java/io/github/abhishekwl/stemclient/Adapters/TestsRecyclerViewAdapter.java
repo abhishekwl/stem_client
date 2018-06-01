@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,17 +26,13 @@ import io.github.abhishekwl.stemclient.R;
 public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecyclerViewAdapter.TestViewHolder> {
 
     private ArrayList<TestItem> testItemArrayList;
-    private ArrayList<TestItem> allItemsArrayList;
-    private LayoutInflater layoutInflater;
     private String currencyCode;
-    private CustomFilter customFilter;
+    private LayoutInflater layoutInflater;
 
     public TestsRecyclerViewAdapter(Context context, ArrayList<TestItem> testItemArrayList) {
         this.testItemArrayList = testItemArrayList;
-        this.allItemsArrayList = testItemArrayList;
         this.layoutInflater = LayoutInflater.from(context);
         this.currencyCode = MainActivity.currency == null ? "\u20b9" : MainActivity.currency.toString();
-        this.customFilter = new CustomFilter(TestsRecyclerViewAdapter.this);
     }
 
     @NonNull
@@ -50,43 +45,12 @@ public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecycler
     @Override
     public void onBindViewHolder(@NonNull TestsRecyclerViewAdapter.TestViewHolder holder, int position) {
         TestItem testItem = testItemArrayList.get(position);
-
-        if (TextUtils.isEmpty(testItem.getHospitalImageUrl()))
-            Glide.with(holder.itemView.getContext()).load(R.drawable.logo).into(holder.hospitalImageView);
-        else
-            Glide.with(holder.itemView.getContext()).load(testItem.getHospitalImageUrl()).into(holder.hospitalImageView);
-        holder.testNameTextView.setText(testItem.getTestName());
-        holder.hospitalNameTextView.setText(testItem.getHospitalName());
-        holder.testPriceTextView.setText(currencyCode + " " + Integer.toString(testItem.getTestPrice()));
-
-        renderTestAddButton(testItem, holder);
-        holder.testAddButton.setOnClickListener(v -> {
-            testItem.setTestSelected(!testItem.isTestSelected());
-            renderTestAddButton(testItem, holder);
-        });
-    }
-
-    private void renderTestAddButton(TestItem testItem, TestViewHolder holder) {
-        if (testItem.isTestSelected()) {
-            holder.testAddButton.setText("- Remove test");
-            holder.testAddButton.setBackground(holder.accentRoundedDrawable);
-        } else {
-            holder.testAddButton.setText("+ Add item to cart");
-            holder.testAddButton.setBackground(holder.primaryRoundedDrawable);
-        }
+        holder.bind(testItem);
     }
 
     @Override
     public int getItemCount() {
         return testItemArrayList.size();
-    }
-
-    public CustomFilter getCustomFilter() {
-        return customFilter;
-    }
-
-    public void setCustomFilter(CustomFilter customFilter) {
-        this.customFilter = customFilter;
     }
 
     class TestViewHolder extends RecyclerView.ViewHolder {
@@ -110,40 +74,27 @@ public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecycler
             ButterKnife.bind(this, itemView);
         }
 
-        @Override
-        public String toString() {
-            return testNameTextView.getText().toString();
-        }
-    }
-
-    public class CustomFilter extends Filter {
-
-        private TestsRecyclerViewAdapter testsRecyclerViewAdapter;
-
-        public CustomFilter(TestsRecyclerViewAdapter testsRecyclerViewAdapter) {
-            super();
-            this.testsRecyclerViewAdapter = testsRecyclerViewAdapter;
-        }
-
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            testItemArrayList.clear();
-            FilterResults filterResults = new FilterResults();
-            if (constraint.length()==0) testItemArrayList.addAll(allItemsArrayList);
-            else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-                for (TestItem testItem: allItemsArrayList) {
-                    if (testItem.getTestName().toLowerCase().contains(filterPattern)) testItemArrayList.add(testItem);
-                }
+        void renderTestAddButton(TestItem testItem) {
+            if (testItem.isTestSelected()) {
+                testAddButton.setText("- Remove test");
+                testAddButton.setBackground(accentRoundedDrawable);
+            } else {
+                testAddButton.setText("+ Add item to cart");
+                testAddButton.setBackground(primaryRoundedDrawable);
             }
-            filterResults.values = testItemArrayList;
-            filterResults.count = testItemArrayList.size();
-            return filterResults;
         }
 
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            notifyDataSetChanged();
+        void bind(TestItem testItem) {
+            if (TextUtils.isEmpty(testItem.getHospitalImageUrl())) Glide.with(testNameTextView.getContext()).load(R.drawable.logo).into(hospitalImageView);
+            else Glide.with(testNameTextView.getContext()).load(testItem.getHospitalImageUrl()).into(hospitalImageView);
+            testNameTextView.setText(testItem.getTestName());
+            hospitalNameTextView.setText(testItem.getHospitalName());
+            testPriceTextView.setText(currencyCode + " " + Integer.toString(testItem.getTestPrice()));
+            renderTestAddButton(testItem);
+            testAddButton.setOnClickListener(v -> {
+                testItem.setTestSelected(!testItem.isTestSelected());
+                renderTestAddButton(testItem);
+            });
         }
     }
 }
