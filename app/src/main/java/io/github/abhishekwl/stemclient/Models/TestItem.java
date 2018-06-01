@@ -12,6 +12,7 @@ public class TestItem {
     private String hospitalUid;
     private String testId;
     private double hospitalLatitude, hospitalLongitude;
+    private int testPopularity;
 
     public TestItem(String testName, String hospitalName, int testPrice, String hospitalUid, String testId, String hospitalImageUrl, double hospitalLatitude, double hospitalLongitude) {
         this.testName = testName;
@@ -23,6 +24,7 @@ public class TestItem {
         this.testId = testId;
         this.hospitalLatitude = hospitalLatitude;
         this.hospitalLongitude = hospitalLongitude;
+        this.testPopularity = 0;
     }
 
     public TestItem(String testName, String hospitalName, int testPrice, String hospitalUid, String testId, double hospitalLatitude, double hospitalLongitude) {
@@ -34,10 +36,15 @@ public class TestItem {
         this.testId = testId;
         this.hospitalLatitude = hospitalLatitude;
         this.hospitalLongitude = hospitalLongitude;
+        this.testPopularity = 0;
     }
 
     public TestItem(Parcel source) {
         this.testName = source.readString();
+    }
+
+    public TestItem() {
+        this.testSelected = false;
     }
 
     public String getTestName() {
@@ -110,5 +117,13 @@ public class TestItem {
 
     public void setHospitalLongitude(double hospitalLongitude) {
         this.hospitalLongitude = hospitalLongitude;
+    }
+
+    public int getTestPopularity() {
+        return testPopularity;
+    }
+
+    public void setTestPopularity(int testPopularity) {
+        this.testPopularity = testPopularity;
     }
 }

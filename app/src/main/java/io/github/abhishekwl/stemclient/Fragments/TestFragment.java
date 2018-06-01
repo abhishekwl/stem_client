@@ -10,18 +10,25 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 import butterknife.BindColor;
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -44,12 +51,14 @@ public class TestFragment extends Fragment {
     int colorPrimary;
     @BindColor(R.color.colorAccent)
     int colorAccent;
+    @BindString(R.string.base_server_url_tests) String serverUrl;
 
     private Unbinder unbinder;
     private View rootView;
     private ArrayList<TestItem> testItemArrayList = new ArrayList<>();
     private TestsRecyclerViewAdapter testsRecyclerViewAdapter;
     private MaterialDialog materialDialog;
+    private RequestQueue requestQueue;
 
     public TestFragment() {
         // Required empty public constructor
@@ -66,42 +75,42 @@ public class TestFragment extends Fragment {
     }
 
     private void initializeViews() {
+        requestQueue = Volley.newRequestQueue(rootView.getContext());
         initializeRecyclerView();
-        new PushDummyData().execute();
+        performNetworkRequest();
     }
 
-    private class PushDummyData extends AsyncTask<Void, Void, ArrayList<TestItem>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            testsProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected ArrayList<TestItem> doInBackground(Void... voids) {
-            ArrayList<TestItem> testItemArrayList = new ArrayList<>();
-            testItemArrayList.add(new TestItem("Glucose Test", "Test Hospital 1", 150, "123", "123", 12.77, 77.87));
-            testItemArrayList.add(new TestItem("Platelets Test", "Test Hospital 1", 250, "123", "123",12.77, 77.87));
-            testItemArrayList.add(new TestItem("Urine Test", "Test Hospital 1", 350, "123", "123",12.77, 77.87));
-            testItemArrayList.add(new TestItem("Diabetes Test", "Test Hospital 1", 450, "123", "123",12.77, 77.87));
-            testItemArrayList.add(new TestItem("Health Checkup", "Test Hospital 1", 550, "123", "123",12.77, 77.87));
-            testItemArrayList.add(new TestItem("Glucose Test", "Test Hospital 1", 150, "123", "123",12.77, 77.87));
-            testItemArrayList.add(new TestItem("Platelets Test", "Test Hospital 1", 250, "123", "123",12.77, 77.87));
-            testItemArrayList.add(new TestItem("Urine Test", "Test Hospital 1", 350, "123", "123",12.77, 77.87));
-            testItemArrayList.add(new TestItem("Diabetes Test", "Test Hospital 1", 450, "123", "123",12.77, 77.87));
-            testItemArrayList.add(new TestItem("Health Checkup", "Test Hospital 1", 550, "123", "123",12.77, 77.87));
-            return testItemArrayList;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<TestItem> testItems) {
-            super.onPostExecute(testItems);
-            testItemArrayList = testItems;
+    private void performNetworkRequest() {
+        testItemArrayList.clear();
+        testsRecyclerViewAdapter.notifyDataSetChanged();
+        testsProgressBar.setVisibility(View.VISIBLE);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, serverUrl, null, response -> {
+            for (int i=0; i<response.length(); i++) {
+                try {
+                    JSONObject jsonObject = response.getJSONObject(i);
+                    TestItem testItem = convertJsonObjectToPojo(jsonObject);
+                    testItemArrayList.add(testItem);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
             testsProgressBar.setVisibility(View.GONE);
-            testsRecyclerViewAdapter = new TestsRecyclerViewAdapter(rootView.getContext(), testItemArrayList);
-            testsRecyclerView.setAdapter(testsRecyclerViewAdapter);
-        }
+            testsRecyclerViewAdapter.notifyDataSetChanged();
+        }, Throwable::printStackTrace);
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private TestItem convertJsonObjectToPojo(JSONObject jsonObject) throws JSONException {
+        TestItem testItem = new TestItem();
+        testItem.setTestName(jsonObject.getString("testName"));
+        testItem.setHospitalName(jsonObject.getString("hospitalName"));
+        testItem.setTestPrice(jsonObject.getInt("testPrice"));
+        testItem.setHospitalUid(jsonObject.getString("hospitalUid"));
+        testItem.setTestId(jsonObject.getString("_id"));
+        testItem.setHospitalLatitude(jsonObject.getDouble("hospitalLatitude"));
+        testItem.setHospitalLongitude(jsonObject.getDouble("hospitalLongitude"));
+        testItem.setHospitalImageUrl(jsonObject.getString("hospitalImageUrl"));
+        return testItem;
     }
 
     private void initializeRecyclerView() {
@@ -120,7 +129,6 @@ public class TestFragment extends Fragment {
             for (TestItem testItem : arrayLists[0]) {
                 if (testItem.isTestSelected()) arrayListSelected.add(testItem);
             }
-            Log.v("SIZE_SELECTED", String.valueOf(arrayListSelected.size()));
             return arrayListSelected;
         }
 
@@ -134,7 +142,6 @@ public class TestFragment extends Fragment {
                 TestItem currentTestItem = testItems.get(i);
                 totalCost += currentTestItem.getTestPrice();
                 dialogBody = dialogBody.concat((i + 1) + ". " + currentTestItem.getTestName() +" ("+currencyCode+" "+Integer.toString(currentTestItem.getTestPrice())+")\n");
-                Log.v("DIALOG_BODY", dialogBody);
             }
             dialogBody += "\nTOTAL COST = "+currencyCode+" " + totalCost;
 
