@@ -1,7 +1,11 @@
 package io.github.abhishekwl.stemclient.Fragments;
 
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,11 +24,17 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindColor;
@@ -59,6 +69,7 @@ public class TestFragment extends Fragment {
     private TestsRecyclerViewAdapter testsRecyclerViewAdapter;
     private MaterialDialog materialDialog;
     private RequestQueue requestQueue;
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     public TestFragment() {
         // Required empty public constructor
@@ -76,28 +87,57 @@ public class TestFragment extends Fragment {
 
     private void initializeViews() {
         requestQueue = Volley.newRequestQueue(rootView.getContext());
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(rootView.getContext());
         initializeRecyclerView();
-        performNetworkRequest();
+        retrieveDeviceLocation();
     }
 
-    private void performNetworkRequest() {
+    @SuppressLint("MissingPermission")
+    private void retrieveDeviceLocation() {
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location!=null) performNetworkRequest(location);
+        });
+    }
+
+    private void performNetworkRequest(Location location) {
         testItemArrayList.clear();
         testsRecyclerViewAdapter.notifyDataSetChanged();
         testsProgressBar.setVisibility(View.VISIBLE);
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, serverUrl, null, response -> {
-            for (int i=0; i<response.length(); i++) {
-                try {
-                    JSONObject jsonObject = response.getJSONObject(i);
-                    TestItem testItem = convertJsonObjectToPojo(jsonObject);
-                    testItemArrayList.add(testItem);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            testsProgressBar.setVisibility(View.GONE);
-            testsRecyclerViewAdapter.notifyDataSetChanged();
-        }, Throwable::printStackTrace);
-        requestQueue.add(jsonArrayRequest);
+        try {
+            String district = getDeviceDistrict(location);
+            district = URLEncoder.encode(district, "utf-8");
+            serverUrl+="?popular=1"+(district==null?"":"&hospitalDistrict="+district);
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, serverUrl, null, response -> {
+                if(response!=null) {
+                    for (int i=0; i<response.length(); i++) {
+                        try {
+                            JSONObject jsonObject = response.getJSONObject(i);
+                            TestItem testItem = convertJsonObjectToPojo(jsonObject);
+                            testItemArrayList.add(testItem);
+                        } catch (JSONException e) {
+                            Snackbar.make(testsRecyclerView, e.getMessage(), Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                    if (response.length()==0) Snackbar.make(testsRecyclerView, "No hospital that offer tests found in your vicinity.", Snackbar.LENGTH_SHORT).show();
+                    testsRecyclerViewAdapter.notifyDataSetChanged();
+                } else Snackbar.make(testsRecyclerView, "There has been an error fetching data from the server.", Snackbar.LENGTH_SHORT).show();
+                testsProgressBar.setVisibility(View.GONE);
+            }, Throwable::printStackTrace);
+            requestQueue.add(jsonArrayRequest);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getDeviceDistrict(Location location) {
+        try {
+            Geocoder geocoder = new Geocoder(rootView.getContext(), MainActivity.deviceLocale);
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            if (addresses.size()>0) return addresses.get(0).getLocality();
+        } catch (IOException e) {
+            return null;
+        }
+        return null;
     }
 
     private TestItem convertJsonObjectToPojo(JSONObject jsonObject) throws JSONException {
