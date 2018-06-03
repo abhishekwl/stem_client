@@ -3,6 +3,7 @@ package io.github.abhishekwl.stemclient.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ public class ProfileFragment extends Fragment {
     @BindView(R.id.profileMaleRadioButton) RadioButton maleRadioButton;
     @BindView(R.id.profileBloodGroupSpinner) Spinner bloodGroupSpinner;
     @BindView(R.id.profileMedicalHistoryEditText) TextInputEditText medicalHistoryEditText;
+    @BindView(R.id.profileContactNumberEditText) TextInputEditText contactNumberEditText;
 
     private View rootView;
     private Unbinder unbinder;
@@ -60,6 +62,10 @@ public class ProfileFragment extends Fragment {
         stringArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         bloodGroupSpinner.setAdapter(stringArrayAdapter);
         bloodGroupSpinner.setPrompt("Choose Blood Group");
+    }
+
+    private void notifyUser(String message) {
+        Snackbar.make(nameEditText, message, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

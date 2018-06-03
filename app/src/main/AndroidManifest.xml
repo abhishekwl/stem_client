@@ -29,22 +29,22 @@
             android:name=".Activities.SignInActivity"
             android:theme="@style/FullscreenAppTheme" />
         <activity
-            android:label=""
             android:name=".Activities.MainActivity"
+            android:label=""
             android:theme="@style/MainActivityTheme" />
         <activity
             android:name=".Activities.SearchTestsActivity"
             android:label="Search"
             android:parentActivityName=".Activities.SearchTestsActivity"
-            android:theme="@style/SearchActivityTheme" >
+            android:theme="@style/SearchActivityTheme">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
-
         </activity>
+        <activity android:name=".Activities.SignUpActivity" android:theme="@style/FullscreenAppTheme"></activity>
     </application>
 
 </manifest>
