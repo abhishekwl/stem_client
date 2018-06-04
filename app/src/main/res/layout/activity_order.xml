@@ -6,8 +6,30 @@
     tools:context=".Activities.OrderActivity">
 
     <LinearLayout
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:paddingTop="4dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <android.support.v7.widget.RecyclerView
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <Button
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:fontFamily="@font/futura"
+            android:textSize="20sp"
+            android:text="Confirm Order"
+            android:background="@drawable/border_primary_rounded"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
