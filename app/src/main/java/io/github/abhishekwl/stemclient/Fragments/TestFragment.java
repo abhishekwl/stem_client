@@ -2,6 +2,7 @@ package io.github.abhishekwl.stemclient.Fragments;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -44,6 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.github.abhishekwl.stemclient.Activities.MainActivity;
+import io.github.abhishekwl.stemclient.Activities.OrderActivity;
 import io.github.abhishekwl.stemclient.Adapters.TestsRecyclerViewAdapter;
 import io.github.abhishekwl.stemclient.Models.TestItem;
 import io.github.abhishekwl.stemclient.R;
@@ -198,7 +200,9 @@ public class TestFragment extends Fragment {
                         .negativeColor(colorAccent)
                         .contentColor(Color.BLACK)
                         .onPositive((dialog, which) -> {
-
+                            Intent orderIntent = new Intent(getActivity(), OrderActivity.class);
+                            orderIntent.putExtra("SELECTED_TESTS", testItems);
+                            startActivity(orderIntent);
                         })
                         .onNegative((dialog, which) -> {
                             if (dialog.isShowing()) dialog.dismiss();

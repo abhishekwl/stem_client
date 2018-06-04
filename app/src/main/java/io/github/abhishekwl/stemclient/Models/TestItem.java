@@ -1,8 +1,9 @@
 package io.github.abhishekwl.stemclient.Models;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
-public class TestItem {
+public class TestItem implements Parcelable {
 
     private String testName;
     private String hospitalName;
@@ -39,13 +40,21 @@ public class TestItem {
         this.testPopularity = 0;
     }
 
-    public TestItem(Parcel source) {
-        this.testName = source.readString();
-    }
-
     public TestItem() {
         this.testSelected = false;
     }
+
+    public static final Creator<TestItem> CREATOR = new Creator<TestItem>() {
+        @Override
+        public TestItem createFromParcel(Parcel in) {
+            return new TestItem(in);
+        }
+
+        @Override
+        public TestItem[] newArray(int size) {
+            return new TestItem[size];
+        }
+    };
 
     public String getTestName() {
         return testName;
@@ -125,5 +134,35 @@ public class TestItem {
 
     public void setTestPopularity(int testPopularity) {
         this.testPopularity = testPopularity;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(testName);
+        dest.writeString(hospitalName);
+        dest.writeInt(testPrice);
+        dest.writeString(hospitalImageUrl);
+        dest.writeString(hospitalUid);
+        dest.writeString(testId);
+        dest.writeDouble(hospitalLatitude);
+        dest.writeDouble(hospitalLongitude);
+        dest.writeInt(testPopularity);
+    }
+
+    private TestItem(Parcel source) {
+        this.testName = source.readString();
+        this.hospitalName = source.readString();
+        this.testPrice = source.readInt();
+        this.hospitalImageUrl = source.readString();
+        this.hospitalUid = source.readString();
+        this.testId = source.readString();
+        this.hospitalLatitude = source.readDouble();
+        this.hospitalLongitude = source.readDouble();
+        this.testPopularity = source.readInt();
     }
 }
