@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,14 +70,12 @@ public class TestFragment extends Fragment {
     private View rootView;
     private ArrayList<TestItem> testItemArrayList = new ArrayList<>();
     private TestsRecyclerViewAdapter testsRecyclerViewAdapter;
-    private MaterialDialog materialDialog;
     private RequestQueue requestQueue;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     public TestFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -107,10 +106,10 @@ public class TestFragment extends Fragment {
         testsProgressBar.setVisibility(View.VISIBLE);
         try {
             String district = getDeviceDistrict(location);
-            district = URLEncoder.encode(district, "utf-8");
-            serverUrl+="?popular=1"+(district==null?"":"&hospitalDistrict="+district);
+            serverUrl+="?popular=1"+(district==null?"":"&hospitalDistrict="+URLEncoder.encode(district, "utf-8"));
             JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, serverUrl, null, response -> {
                 if(response!=null) {
+                    Log.v("RESPONSE", response.toString());
                     for (int i=0; i<response.length(); i++) {
                         try {
                             JSONObject jsonObject = response.getJSONObject(i);
@@ -163,6 +162,7 @@ public class TestFragment extends Fragment {
         testsRecyclerView.setAdapter(testsRecyclerViewAdapter);
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class ExtractSelectedTests extends AsyncTask<ArrayList<TestItem>, Void, ArrayList<TestItem>> {
 
         @Override
@@ -190,7 +190,7 @@ public class TestFragment extends Fragment {
             if (testItems.isEmpty())
                 Snackbar.make(testsRecyclerView, "Please select at least one test.", Snackbar.LENGTH_SHORT).show();
             else {
-                materialDialog = new MaterialDialog.Builder(Objects.requireNonNull(getActivity()))
+                new MaterialDialog.Builder(Objects.requireNonNull(getActivity()))
                         .title("SELECTED TESTS")
                         .content(dialogBody)
                         .positiveText("PROCEED")
@@ -214,6 +214,7 @@ public class TestFragment extends Fragment {
 
     @OnClick(R.id.testsNextButton)
     public void onNextButtonPressed() {
+        //noinspection unchecked
         new ExtractSelectedTests().execute(testItemArrayList);
     }
 

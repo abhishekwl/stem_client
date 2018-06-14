@@ -87,7 +87,7 @@ public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecycler
         void bind(TestItem testItem) {
             if (TextUtils.isEmpty(testItem.getHospitalImageUrl())) Glide.with(testNameTextView.getContext()).load(R.drawable.logo).into(hospitalImageView);
             else Glide.with(testNameTextView.getContext()).load(testItem.getHospitalImageUrl()).into(hospitalImageView);
-            testNameTextView.setText(testItem.getTestName());
+            testNameTextView.setText(Character.toUpperCase(testItem.getTestName().charAt(0))+testItem.getTestName().substring(1));
             hospitalNameTextView.setText(testItem.getHospitalName());
             testPriceTextView.setText(currencyCode + " " + Integer.toString(testItem.getTestPrice()));
             renderTestAddButton(testItem);
