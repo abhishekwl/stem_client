@@ -15,19 +15,19 @@
 
     <style name="SearchActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorBackground</item>
-        <item name="colorPrimaryDark">@color/colorTabUnselected</item>
+        <item name="colorPrimaryDark">@color/colorBackground</item>
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="MainActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorBackground</item>
-        <item name="colorPrimaryDark">@color/colorTabUnselected</item>
+        <item name="colorPrimaryDark">@color/colorBackground</item>
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="OrderActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorBackground</item>
-        <item name="colorPrimaryDark">@color/colorTabUnselected</item>
+        <item name="colorPrimaryDark">@color/colorBackground</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="actionBarStyle">@style/MyActionBar</item>
     </style>

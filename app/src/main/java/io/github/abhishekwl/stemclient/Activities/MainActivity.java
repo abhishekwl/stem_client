@@ -112,11 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                startActivity(new Intent(MainActivity.this, SearchTestsActivity.class));
-                break;
-        }
         return super.onOptionsItemSelected(item);
     }
 
