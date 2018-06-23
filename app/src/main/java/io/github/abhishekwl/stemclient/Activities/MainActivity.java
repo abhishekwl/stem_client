@@ -2,7 +2,6 @@ package io.github.abhishekwl.stemclient.Activities;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.icu.util.Currency;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) tabLayout.setElevation(8f);
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_local_hospital_black_24dp);
-        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_history_black_24dp);
-        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.ic_person_black_24dp);
-        Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.ic_info_outline_black_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_search_black_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.ic_history_black_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.ic_person_black_24dp);
         Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(0)).getIcon()).setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN);
         Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(1)).getIcon()).setColorFilter(colorTextLight, PorterDuff.Mode.SRC_IN);
         Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(2)).getIcon()).setColorFilter(colorTextLight, PorterDuff.Mode.SRC_IN);
@@ -104,9 +103,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem menuItem = menu.getItem(0);
-        Drawable icon = menuItem.getIcon();
-        if (icon!=null) icon.setColorFilter(colorTextDark, PorterDuff.Mode.SRC_IN);
         return true;
     }
 

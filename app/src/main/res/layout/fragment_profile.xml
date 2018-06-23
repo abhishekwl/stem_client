@@ -133,14 +133,12 @@
 
         <Button
             android:id="@+id/profileUpdateProfileButton"
-            android:fontFamily="@font/futura"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textAllCaps="false"
+            android:textSize="16sp"
             android:text="Update Profile"
             android:background="@color/colorPrimary"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
