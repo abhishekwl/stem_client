@@ -20,16 +20,16 @@ import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.abhishekwl.stemclient.Activities.MainActivity;
-import io.github.abhishekwl.stemclient.Models.TestItem;
+import io.github.abhishekwl.stemclient.Models.Test;
 import io.github.abhishekwl.stemclient.R;
 
 public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecyclerViewAdapter.TestViewHolder> {
 
-    private ArrayList<TestItem> testItemArrayList;
+    private ArrayList<Test> testItemArrayList;
     private String currencyCode;
     private LayoutInflater layoutInflater;
 
-    public TestsRecyclerViewAdapter(Context context, ArrayList<TestItem> testItemArrayList) {
+    public TestsRecyclerViewAdapter(Context context, ArrayList<Test> testItemArrayList) {
         this.testItemArrayList = testItemArrayList;
         this.layoutInflater = LayoutInflater.from(context);
         this.currencyCode = MainActivity.currency == null ? "\u20b9" : MainActivity.currency.toString();
@@ -44,7 +44,7 @@ public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecycler
 
     @Override
     public void onBindViewHolder(@NonNull TestsRecyclerViewAdapter.TestViewHolder holder, int position) {
-        TestItem testItem = testItemArrayList.get(position);
+        Test testItem = testItemArrayList.get(position);
         holder.bind(testItem);
     }
 
@@ -74,7 +74,7 @@ public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecycler
             ButterKnife.bind(this, itemView);
         }
 
-        void renderTestAddButton(TestItem testItem) {
+        void renderTestAddButton(Test testItem) {
             if (testItem.isTestSelected()) {
                 testAddButton.setText("- Remove test");
                 testAddButton.setBackground(accentRoundedDrawable);
@@ -84,12 +84,12 @@ public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecycler
             }
         }
 
-        void bind(TestItem testItem) {
-            if (TextUtils.isEmpty(testItem.getHospitalImageUrl())) Glide.with(testNameTextView.getContext()).load(R.drawable.logo).into(hospitalImageView);
-            else Glide.with(testNameTextView.getContext()).load(testItem.getHospitalImageUrl()).into(hospitalImageView);
+        void bind(Test testItem) {
+            if (TextUtils.isEmpty(testItem.getTestHospital().getHospitalImageUrl())) Glide.with(testNameTextView.getContext()).load(R.drawable.logo).into(hospitalImageView);
+            else Glide.with(testNameTextView.getContext()).load(testItem.getTestHospital().getHospitalImageUrl()).into(hospitalImageView);
             testNameTextView.setText(Character.toUpperCase(testItem.getTestName().charAt(0))+testItem.getTestName().substring(1));
-            hospitalNameTextView.setText(testItem.getHospitalName());
-            testPriceTextView.setText(currencyCode + " " + Integer.toString(testItem.getTestPrice()));
+            hospitalNameTextView.setText(testItem.getTestHospital().getHospitalName());
+            testPriceTextView.setText(currencyCode + " " + Double.toString(testItem.getTestPrice()));
             renderTestAddButton(testItem);
             testAddButton.setOnClickListener(v -> {
                 testItem.setTestSelected(!testItem.isTestSelected());

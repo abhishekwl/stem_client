@@ -23,6 +23,7 @@
         <item>AB -ve</item>
     </string-array>
 
+    <string name="BASE_SERVER">http://192.168.2.6:8000/api/v1/</string>
     <string name="base_server_url_tests">http://192.168.2.5:8000/api/v1/tests</string>
     <string name="base_server_url_users">http://192.168.2.5:8000/api/v1/users</string>
 

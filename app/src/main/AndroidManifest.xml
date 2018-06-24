@@ -35,7 +35,6 @@
         <activity
             android:name=".Activities.SignUpActivity"
             android:theme="@style/FullscreenAppTheme" />
-        <activity android:name=".Activities.OrderActivity" android:theme="@style/OrderActivityTheme" android:label="Confirm Order"  />
     </application>
 
 </manifest>
