@@ -99,9 +99,8 @@ public class TestFragment extends Fragment {
         testsProgressBar.setVisibility(View.VISIBLE);
 
         if (apiInterface==null) apiInterface = ApiClient.getClient(rootView.getContext()).create(ApiInterface.class);
-        Call<ArrayList<Test>> popularTestsCall = apiInterface.getPopularTests("testclient", deviceCity);
         //TODO: Update Firebase UID being passed.
-        popularTestsCall.enqueue(new Callback<ArrayList<Test>>() {
+        apiInterface.getPopularTests("testclient", deviceCity).enqueue(new Callback<ArrayList<Test>>() {
             @Override
             public void onResponse(@NonNull Call<ArrayList<Test>> call, @NonNull Response<ArrayList<Test>> response) {
                 testArrayList.addAll(response.body());
