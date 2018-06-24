@@ -86,6 +86,7 @@ public class User {
         this.userGender = userGender;
         this.userContactNumber = userContactNumber;
         this.userImageUrl = userImageUrl;
+        this.userEmailId = userEmailId;
     }
 
     public User(String userId, String userName, int userAge, String userBloodGroup, boolean userGender, String userContactNumber, String userEmailId) {
@@ -95,6 +96,7 @@ public class User {
         this.userBloodGroup = userBloodGroup;
         this.userGender = userGender;
         this.userContactNumber = userContactNumber;
+        this.userEmailId = userEmailId;
     }
 
     public User(String userId, String userName, int userAge, String userBloodGroup, boolean userGender, String userContactNumber, String userImageUrl, String userAdditionalInfo, String userEmailId) {
@@ -106,6 +108,7 @@ public class User {
         this.userContactNumber = userContactNumber;
         this.userImageUrl = userImageUrl;
         this.userAdditionalInfo = userAdditionalInfo;
+        this.userEmailId = userEmailId;
     }
 
     public String getUserEmailId() {

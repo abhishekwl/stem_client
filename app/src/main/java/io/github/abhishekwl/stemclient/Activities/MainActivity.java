@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Unbinder unbinder;
     public static Currency currency;
     public static Locale deviceLocale;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeFirebase() {
-        FirebaseAuth firebaseAuth1 = FirebaseAuth.getInstance();
-        firebaseAuth1.addAuthStateListener(firebaseAuth -> {
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseAuth.addAuthStateListener(firebaseAuth -> {
             if (firebaseAuth.getCurrentUser() == null) {
                 startActivity(new Intent(MainActivity.this, SignInActivity.class));
                 finish();
@@ -108,6 +109,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuItemLogout:
+                firebaseAuth.signOut();
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 

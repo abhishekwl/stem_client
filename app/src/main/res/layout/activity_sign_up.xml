@@ -113,9 +113,18 @@
 
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/signUpBloodGroupSpinner"
+        <TextView
+            android:fontFamily="sans-serif-light"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:text="Blood Group"
             android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:layout_marginTop="2dp"
+            android:id="@+id/signUpBloodGroupSpinner"
             android:spinnerMode="dropdown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

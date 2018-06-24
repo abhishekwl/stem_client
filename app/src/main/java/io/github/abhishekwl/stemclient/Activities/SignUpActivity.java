@@ -70,7 +70,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void notifyMessage(String message) {
-        if (materialDialog.isShowing()) materialDialog.dismiss();
+        if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
         Snackbar.make(signUpButton, message, Snackbar.LENGTH_SHORT).show();
     }
 
@@ -116,6 +116,7 @@ public class SignUpActivity extends AppCompatActivity {
                 .enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                        if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
                         startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                         finish();
                     }

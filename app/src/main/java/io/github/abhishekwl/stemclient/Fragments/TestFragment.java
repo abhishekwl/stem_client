@@ -2,11 +2,13 @@ package io.github.abhishekwl.stemclient.Fragments;
 
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
@@ -113,10 +114,11 @@ public class TestFragment extends Fragment {
                 testArrayList.clear();
                 testsProgressBar.setVisibility(View.GONE);
                 testsRecyclerViewAdapter.notifyDataSetChanged();
-                new MaterialDialog.Builder(rootView.getContext())
-                        .title("Error")
-                        .content("There has been an error fetching data from the cloud :(")
-                        .show();
+                Snackbar.make(testsRecyclerView, "There has been an error fetching data from the cloud :(", Snackbar.LENGTH_LONG)
+                        .setActionTextColor(Color.YELLOW)
+                        .setAction("RETRY", v -> {
+                            fetchPopularTests(latitude, longitude, deviceCity);
+                        }).show();
             }
         });
     }
