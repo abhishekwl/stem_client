@@ -14,6 +14,7 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
+    //TESTS ENDPOINT
     @GET("tests/popular")
     Call<ArrayList<Test>> getPopularTests(@Query("uid") String clientUid, @Query("city") String clientCityName);
     @GET("tests")
@@ -22,9 +23,11 @@ public interface ApiInterface {
     Call<Test> getTest(@Query("uid") String clientUid, @Query("city") String clientCityName, @Path("testId") String testId);
 
 
-
+    //USERS ENDPOINT
     @POST("users")
     @FormUrlEncoded
     Call<User> createNewUser(@Field("uid") String uid, @Field("name") String name, @Field("age") int age, @Field("blood") String bloodGroup, @Field("gender") boolean gender, @Field("contact") String contactNumber, @Field("email") String emailAddress);
 
+
+    //ORDERS ENDPOINT
 }
