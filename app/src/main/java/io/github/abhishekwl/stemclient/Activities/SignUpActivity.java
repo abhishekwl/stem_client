@@ -78,7 +78,7 @@ public class SignUpActivity extends AppCompatActivity {
     public void onSignUpButtonPress() {
         String userName = nameEditText.getText().toString();
         String userAge = ageEditText.getText().toString();
-        boolean userGender = maleRadioButton.isSelected();
+        boolean userGender = maleRadioButton.isChecked();
         String userContactNumber = contactNumberEditText.getText().toString();
         String userBloodGroup = bloodGroupSpinner.getSelectedItem().toString();
         String userEmail = emailEditText.getText().toString();

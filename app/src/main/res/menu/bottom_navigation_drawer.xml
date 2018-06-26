@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItemPopular"
+        android:icon="@drawable/ic_local_hospital_black_24dp"
+        android:title="POPULAR" />
+    <item
+        android:id="@+id/menuItemSearch"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="SEARCH" />
+    <item
+        android:id="@+id/menuItemHistory"
+        android:icon="@drawable/ic_history_black_24dp"
+        android:title="HISTORY" />
+    <item
+        android:id="@+id/menuItemProfile"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="Me" />
+</menu>

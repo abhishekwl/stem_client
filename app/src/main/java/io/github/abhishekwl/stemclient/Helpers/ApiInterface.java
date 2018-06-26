@@ -27,7 +27,8 @@ public interface ApiInterface {
     @POST("users")
     @FormUrlEncoded
     Call<User> createNewUser(@Field("uid") String uid, @Field("name") String name, @Field("age") int age, @Field("blood") String bloodGroup, @Field("gender") boolean gender, @Field("contact") String contactNumber, @Field("email") String emailAddress);
-
+    @GET("users/{uid}")
+    Call<User> getUser(@Path("uid") String uid);
 
     //ORDERS ENDPOINT
 }

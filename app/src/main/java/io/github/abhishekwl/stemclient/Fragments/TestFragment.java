@@ -70,7 +70,6 @@ public class TestFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_test, container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initializeViews();
@@ -84,6 +83,7 @@ public class TestFragment extends Fragment {
         retrieveDeviceLocation();
     }
 
+    //TODO: ADD PERMISSION CHECK AND REQUEST!
     @SuppressLint("MissingPermission")
     private void retrieveDeviceLocation() {
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
@@ -100,8 +100,7 @@ public class TestFragment extends Fragment {
         testsProgressBar.setVisibility(View.VISIBLE);
 
         if (apiInterface==null) apiInterface = ApiClient.getClient(rootView.getContext()).create(ApiInterface.class);
-        //TODO: Update Firebase UID being passed.
-        apiInterface.getPopularTests("testclient", deviceCity).enqueue(new Callback<ArrayList<Test>>() {
+        apiInterface.getPopularTests(firebaseAuth.getUid(), deviceCity).enqueue(new Callback<ArrayList<Test>>() {
             @Override
             public void onResponse(@NonNull Call<ArrayList<Test>> call, @NonNull Response<ArrayList<Test>> response) {
                 testArrayList.addAll(response.body());
@@ -114,11 +113,9 @@ public class TestFragment extends Fragment {
                 testArrayList.clear();
                 testsProgressBar.setVisibility(View.GONE);
                 testsRecyclerViewAdapter.notifyDataSetChanged();
-                Snackbar.make(testsRecyclerView, "There has been an error fetching data from the cloud :(", Snackbar.LENGTH_LONG)
+                Snackbar.make(testsRecyclerView, t.getMessage(), Snackbar.LENGTH_LONG)
                         .setActionTextColor(Color.YELLOW)
-                        .setAction("RETRY", v -> {
-                            fetchPopularTests(latitude, longitude, deviceCity);
-                        }).show();
+                        .setAction("RETRY", v -> fetchPopularTests(latitude, longitude, deviceCity)).show();
             }
         });
     }
