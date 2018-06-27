@@ -9,6 +9,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -29,6 +30,9 @@ public interface ApiInterface {
     Call<User> createNewUser(@Field("uid") String uid, @Field("name") String name, @Field("age") int age, @Field("blood") String bloodGroup, @Field("gender") boolean gender, @Field("contact") String contactNumber, @Field("email") String emailAddress);
     @GET("users/{uid}")
     Call<User> getUser(@Path("uid") String uid);
+    @PUT("users/{uid}")
+    @FormUrlEncoded
+    Call<User> updateUser(@Path("uid") String uid, @Field("image") String imageUrl, @Field("name") String name, @Field("contact") String contactNumber, @Field("age") int age, @Field("gender") boolean gender, @Field("blood") String bloodGroup, @Field("additional") String additionInformation);
 
     //ORDERS ENDPOINT
 }

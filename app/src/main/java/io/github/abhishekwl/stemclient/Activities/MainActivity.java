@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(mainViewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) tabLayout.setElevation(8f);
-        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_local_hospital_black_24dp);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_home_black_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_search_black_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.ic_history_black_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.ic_person_black_24dp);

@@ -1,7 +1,9 @@
 package io.github.abhishekwl.stemclient.Fragments;
 
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -22,6 +24,12 @@ import android.widget.ProgressBar;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -80,10 +88,34 @@ public class TestFragment extends Fragment {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(rootView.getContext());
         firebaseAuth = FirebaseAuth.getInstance();
         initializeRecyclerView();
-        retrieveDeviceLocation();
+        checkPermissions();
     }
 
-    //TODO: ADD PERMISSION CHECK AND REQUEST!
+    private void checkPermissions() {
+        Dexter.withActivity(getActivity())
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+                        retrieveDeviceLocation();
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        Snackbar.make(testsRecyclerView, "Please give us access to location services so that we know where you are", Snackbar.LENGTH_INDEFINITE)
+                        .setActionTextColor(Color.YELLOW)
+                        .setAction("GRANT", v -> {
+                            checkPermissions();
+                        }).show();
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+
+                    }
+                }).check();
+    }
+
     @SuppressLint("MissingPermission")
     private void retrieveDeviceLocation() {
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(location -> {
@@ -91,6 +123,12 @@ public class TestFragment extends Fragment {
                 String deviceCity = getDeviceDistrict(location);
                 if (!TextUtils.isEmpty(deviceCity)) fetchPopularTests(location.getLatitude(), location.getLongitude(), deviceCity);
             }
+        }).addOnFailureListener(e -> {
+            Snackbar.make(testsRecyclerView, "Please make sure location services are active.", Snackbar.LENGTH_LONG)
+                    .setActionTextColor(Color.YELLOW)
+                    .setAction("SETTINGS", v -> {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }).show();
         });
     }
 
