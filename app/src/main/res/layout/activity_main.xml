@@ -5,37 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/mainToolbar"
-        android:layout_height="?android:attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:background="@color/colorBackground">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/futura"
-            android:text="Health"
-            android:textColor="@color/colorTextDark"
-            android:textSize="22sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/futura"
-            android:text="Tap"
-            android:textColor="@color/colorPrimary"
-            android:textSize="22sp" />
-
-    </android.support.v7.widget.Toolbar>
-
     <android.support.design.widget.TabLayout
         android:id="@+id/mainTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorBackground"
-        app:tabIndicatorColor="@color/colorPrimary"
-        app:tabSelectedTextColor="@color/colorPrimary"
+        android:background="@color/colorPrimary"
+        app:tabIndicatorColor="@android:color/white"
+        app:tabSelectedTextColor="@android:color/white"
         app:tabTextColor="@color/colorTextLight">
 
     </android.support.design.widget.TabLayout>

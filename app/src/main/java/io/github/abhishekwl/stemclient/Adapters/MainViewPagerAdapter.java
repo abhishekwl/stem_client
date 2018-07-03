@@ -2,14 +2,13 @@ package io.github.abhishekwl.stemclient.Adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-
+import android.support.v4.app.FragmentStatePagerAdapter;
 import io.github.abhishekwl.stemclient.Fragments.HistoryFragment;
 import io.github.abhishekwl.stemclient.Fragments.ProfileFragment;
 import io.github.abhishekwl.stemclient.Fragments.SearchFragment;
 import io.github.abhishekwl.stemclient.Fragments.TestFragment;
 
-public class MainViewPagerAdapter extends FragmentPagerAdapter {
+public class MainViewPagerAdapter extends FragmentStatePagerAdapter {
     public MainViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }

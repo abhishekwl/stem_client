@@ -29,9 +29,7 @@
             android:name=".Activities.SignInActivity"
             android:theme="@style/FullscreenAppTheme" />
         <activity
-            android:name=".Activities.MainActivity"
-            android:label=""
-            android:theme="@style/MainActivityTheme" />
+            android:name=".Activities.MainActivity"/>
         <activity
             android:name=".Activities.SignUpActivity"
             android:theme="@style/FullscreenAppTheme" />

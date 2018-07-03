@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Activities.SignInActivity">
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  tools:context=".Activities.SignInActivity">
 
     <LinearLayout
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimary"
         android:layout_weight="0.9"
         android:orientation="vertical"
         android:gravity="center"
@@ -120,7 +119,7 @@
             android:textSize="20sp"
             android:textColor="@color/colorBackground"
             android:text="Sign In"
-            android:background="@color/colorPrimary"
+            android:background="@color/colorAccent"
             android:layout_marginTop="32dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

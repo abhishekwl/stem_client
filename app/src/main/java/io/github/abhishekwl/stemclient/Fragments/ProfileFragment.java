@@ -8,7 +8,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +15,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.Objects;
-
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
 import io.github.abhishekwl.stemclient.Helpers.ApiClient;
 import io.github.abhishekwl.stemclient.Helpers.ApiInterface;
 import io.github.abhishekwl.stemclient.Models.User;
 import io.github.abhishekwl.stemclient.R;
+import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -90,7 +86,8 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.body()==null) {
-                    Snackbar.make(profilePictureImageView, "There has been an error fetching your profile :(", Snackbar.LENGTH_LONG)
+                  if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
+                  Snackbar.make(profilePictureImageView, "There has been an error fetching your profile :(", Snackbar.LENGTH_LONG)
                             .setActionTextColor(Color.YELLOW)
                             .setAction("RETRY", v -> {
                                 fetchCurrentUser();
@@ -100,10 +97,10 @@ public class ProfileFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                Log.v("USER_FETCH", t.getMessage());
-                Snackbar.make(profilePictureImageView, "There has been an error fetching data from the cloud :(", Snackbar.LENGTH_SHORT)
+              if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
+              Snackbar.make(profilePictureImageView, "There has been an error fetching data from the cloud :(", Snackbar.LENGTH_SHORT)
                         .setActionTextColor(colorPrimary)
-                        .setAction("ERROR", v -> fetchCurrentUser()).show();
+                        .setAction("RETRY", v -> fetchCurrentUser()).show();
             }
         });
     }
@@ -151,7 +148,8 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                         if (response.body()==null) {
-                            Snackbar.make(profilePictureImageView, "There has been an error updating your profile :(", Snackbar.LENGTH_LONG)
+                          if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
+                          Snackbar.make(profilePictureImageView, "There has been an error updating your profile :(", Snackbar.LENGTH_LONG)
                                     .setActionTextColor(Color.YELLOW)
                                     .setAction("RETRY", v -> {
                                         onUpdateButtonPress();
@@ -161,6 +159,7 @@ public class ProfileFragment extends Fragment {
 
                     @Override
                     public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                        if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
                         Snackbar.make(profilePictureImageView, t.getMessage(), Snackbar.LENGTH_LONG)
                                 .setActionTextColor(colorPrimary)
                                 .setAction("RETRY", v -> {

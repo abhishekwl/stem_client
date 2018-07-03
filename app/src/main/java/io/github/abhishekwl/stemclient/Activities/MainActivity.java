@@ -8,33 +8,27 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.Locale;
-import java.util.Objects;
-
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.google.firebase.auth.FirebaseAuth;
 import io.github.abhishekwl.stemclient.Adapters.MainViewPagerAdapter;
 import io.github.abhishekwl.stemclient.R;
+import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.mainTabLayout) TabLayout tabLayout;
     @BindView(R.id.mainViewPager) ViewPager viewPager;
-    @BindView(R.id.mainToolbar) Toolbar mainToolbar;
     @BindColor(R.color.colorTabUnselected) int colorTabUnselected;
     @BindColor(android.R.color.white) int colorWhite;
     @BindColor(R.color.colorPrimary) int colorPrimary;
     @BindColor(R.color.colorTextLight) int colorTextLight;
     @BindColor(R.color.colorTextDark) int colorTextDark;
-    @BindColor(R.color.colorAccentDark) int colorAccentDark;
 
     private Unbinder unbinder;
     public static Currency currency;
@@ -52,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeViews() {
         deviceLocale = Locale.getDefault();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) mainToolbar.setElevation(0f);
-        setSupportActionBar(mainToolbar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
             currency = Currency.getInstance(deviceLocale);
         initializeTabLayoutAndViewPager();
@@ -71,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeTabLayoutAndViewPager() {
-        Objects.requireNonNull(getSupportActionBar()).setElevation(8f);
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0f);
         MainViewPagerAdapter mainViewPagerAdapter = new MainViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mainViewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -80,14 +72,14 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_search_black_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.ic_history_black_24dp);
         Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.ic_person_black_24dp);
-        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(0)).getIcon()).setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN);
+        Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(0)).getIcon()).setColorFilter(colorWhite, PorterDuff.Mode.SRC_IN);
         Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(1)).getIcon()).setColorFilter(colorTextLight, PorterDuff.Mode.SRC_IN);
         Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(2)).getIcon()).setColorFilter(colorTextLight, PorterDuff.Mode.SRC_IN);
         Objects.requireNonNull(Objects.requireNonNull(tabLayout.getTabAt(3)).getIcon()).setColorFilter(colorTextLight, PorterDuff.Mode.SRC_IN);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Objects.requireNonNull(tab.getIcon()).setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN);
+                Objects.requireNonNull(tab.getIcon()).setColorFilter(colorWhite, PorterDuff.Mode.SRC_IN);
             }
 
             @Override
