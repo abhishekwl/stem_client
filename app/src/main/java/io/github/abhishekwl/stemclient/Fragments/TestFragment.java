@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -20,7 +21,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-
+import butterknife.BindColor;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,22 +35,16 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.BindColor;
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import io.github.abhishekwl.stemclient.Activities.CheckoutActivity;
 import io.github.abhishekwl.stemclient.Activities.MainActivity;
 import io.github.abhishekwl.stemclient.Adapters.TestsRecyclerViewAdapter;
 import io.github.abhishekwl.stemclient.Helpers.ApiClient;
 import io.github.abhishekwl.stemclient.Helpers.ApiInterface;
 import io.github.abhishekwl.stemclient.Models.Test;
 import io.github.abhishekwl.stemclient.R;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,7 +62,6 @@ public class TestFragment extends Fragment {
     int colorPrimary;
     @BindColor(R.color.colorAccent)
     int colorAccent;
-    @BindString(R.string.base_server_url_tests) String serverUrl;
 
     private Unbinder unbinder;
     private View rootView;
@@ -175,6 +173,39 @@ public class TestFragment extends Fragment {
         testsRecyclerView.setHasFixedSize(true);
         testsRecyclerViewAdapter = new TestsRecyclerViewAdapter(rootView.getContext(), testArrayList);
         testsRecyclerView.setAdapter(testsRecyclerViewAdapter);
+    }
+
+    private class TestArrayListFilter extends AsyncTask<ArrayList<Test>, Void, ArrayList<Test>> {
+
+      @Override
+      protected ArrayList<Test> doInBackground(ArrayList<Test>... arrayLists) {
+        ArrayList<Test> filteredList = new ArrayList<>();
+        for (Test test: arrayLists[0]) if (test.isTestSelected()) filteredList.add(test);
+        for (int i=0; i<filteredList.size(); i++) {
+          for (int j=0; j<=i; j++) {
+            if (i!=j && (filteredList.get(i).getTestHospital().getHospitalUid().equals(filteredList.get(j).getTestHospital().getHospitalUid()))) return null;
+          }
+        }
+        return filteredList;
+      }
+
+      @Override
+      protected void onPostExecute(ArrayList<Test> tests) {
+        super.onPostExecute(tests);
+        if (tests==null) Snackbar.make(testsRecyclerView, "Please select tests from the same hospital", Snackbar.LENGTH_SHORT).show();
+        else if (tests.isEmpty()) Snackbar.make(testsRecyclerView, "Please select tests to be added to Cart.", Snackbar.LENGTH_SHORT).show();
+        else {
+          Intent checkoutTestsIntent = new Intent(getActivity(), CheckoutActivity.class);
+          checkoutTestsIntent.putParcelableArrayListExtra("TESTS", tests);
+          startActivity(checkoutTestsIntent);
+        }
+      }
+    }
+
+    @OnClick(R.id.testsNextButton)
+    public void onNextButtonPressed() {
+      //noinspection unchecked
+      new TestArrayListFilter().execute(testArrayList);
     }
 
     @Override

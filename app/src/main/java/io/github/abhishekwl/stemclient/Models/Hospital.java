@@ -1,8 +1,9 @@
 package io.github.abhishekwl.stemclient.Models;
 
+import android.os.Parcel;
 import com.google.gson.annotations.SerializedName;
 
-public class Hospital {
+public class Hospital implements android.os.Parcelable {
 
     @SerializedName("uid") private String hospitalUid;
     @SerializedName("name") private String hospitalName;
@@ -76,4 +77,40 @@ public class Hospital {
     public void setHospitalImageUrl(String hospitalImageUrl) {
         this.hospitalImageUrl = hospitalImageUrl;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.hospitalUid);
+        dest.writeString(this.hospitalName);
+        dest.writeDouble(this.hospitalLatitude);
+        dest.writeDouble(this.hospitalLongitude);
+        dest.writeString(this.hospitalCity);
+        dest.writeString(this.hospitalImageUrl);
+    }
+
+    private Hospital(Parcel in) {
+        this.hospitalUid = in.readString();
+        this.hospitalName = in.readString();
+        this.hospitalLatitude = in.readDouble();
+        this.hospitalLongitude = in.readDouble();
+        this.hospitalCity = in.readString();
+        this.hospitalImageUrl = in.readString();
+    }
+
+    public static final Creator<Hospital> CREATOR = new Creator<Hospital>() {
+        @Override
+        public Hospital createFromParcel(Parcel source) {
+            return new Hospital(source);
+        }
+
+        @Override
+        public Hospital[] newArray(int size) {
+            return new Hospital[size];
+        }
+    };
 }

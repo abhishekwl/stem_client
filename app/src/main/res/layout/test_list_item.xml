@@ -63,7 +63,7 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:textAllCaps="false"
-                android:background="@drawable/border_primary_rounded"
+                android:background="@drawable/border_accent_rounded"
                 android:layout_marginTop="8dp"
                 android:text="+ Add to cart"
                 android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
             tools:src="@drawable/logo"
             app:civ_border_width="1dp"
             app:civ_border_color="@color/colorTextDark"
-            app:civ_circle_background_color="@color/colorAccent"
+            app:civ_circle_background_color="@color/colorPrimary"
             android:layout_width="64dp"
             android:layout_height="64dp" />
 

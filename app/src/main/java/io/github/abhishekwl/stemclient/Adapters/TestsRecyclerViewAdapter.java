@@ -11,17 +11,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
-
-import java.util.ArrayList;
-
 import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.bumptech.glide.Glide;
 import io.github.abhishekwl.stemclient.Activities.MainActivity;
 import io.github.abhishekwl.stemclient.Models.Test;
 import io.github.abhishekwl.stemclient.R;
+import java.util.ArrayList;
 
 public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecyclerViewAdapter.TestViewHolder> {
 
@@ -77,10 +74,10 @@ public class TestsRecyclerViewAdapter extends RecyclerView.Adapter<TestsRecycler
         void renderTestAddButton(Test testItem) {
             if (testItem.isTestSelected()) {
                 testAddButton.setText("- Remove test");
-                testAddButton.setBackground(accentRoundedDrawable);
+                testAddButton.setBackground(primaryRoundedDrawable);
             } else {
                 testAddButton.setText("+ Add item to cart");
-                testAddButton.setBackground(primaryRoundedDrawable);
+                testAddButton.setBackground(accentRoundedDrawable);
             }
         }
 
