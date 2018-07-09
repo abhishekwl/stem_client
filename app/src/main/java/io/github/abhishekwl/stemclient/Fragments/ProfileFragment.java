@@ -153,34 +153,49 @@ public class ProfileFragment extends Fragment {
         boolean userGender = maleRadioButton.isChecked();
         String userBloodGroup = bloodGroupSpinner.getSelectedItem().toString();
         String userAdditionalInfo = medicalHistoryEditText.getText().toString();
-        //TODO: Fields Validation
-        apiInterface.updateUser(firebaseAuth.getUid(), userImageUrl, userName, userContactNumber, userAge, userGender, userBloodGroup, userAdditionalInfo)
-                .enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                        if (response.body()==null) {
-                          if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
-                          Snackbar.make(profilePictureImageView, "There has been an error updating your profile :(", Snackbar.LENGTH_LONG)
-                                    .setActionTextColor(Color.YELLOW)
-                                    .setAction("RETRY", v -> {
-                                        onUpdateButtonPress();
-                                    }).show();
-                        } else renderUserDetails(Objects.requireNonNull(response.body()));
-                    }
 
-                    @Override
-                    public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                        if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
-                        Snackbar.make(profilePictureImageView, t.getMessage(), Snackbar.LENGTH_LONG)
-                                .setActionTextColor(colorPrimary)
-                                .setAction("RETRY", v -> {
-                                    onUpdateButtonPress();
-                                }).show();
-                    }
-                });
+        if (validation(userName, userContactNumber, userAge, userBloodGroup)) {
+          apiInterface.updateUser(firebaseAuth.getUid(), userImageUrl, userName, userContactNumber, userAge, userGender, userBloodGroup, userAdditionalInfo)
+              .enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                  if (response.body()==null) {
+                    if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
+                    Snackbar.make(profilePictureImageView, "There has been an error updating your profile :(", Snackbar.LENGTH_LONG)
+                        .setActionTextColor(Color.YELLOW)
+                        .setAction("RETRY", v -> {
+                          onUpdateButtonPress();
+                        }).show();
+                  } else renderUserDetails(Objects.requireNonNull(response.body()));
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                  if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
+                  Snackbar.make(profilePictureImageView, t.getMessage(), Snackbar.LENGTH_LONG)
+                      .setActionTextColor(colorPrimary)
+                      .setAction("RETRY", v -> {
+                        onUpdateButtonPress();
+                      }).show();
+                }
+              });
+        } else Snackbar.make(profilePictureImageView, "Please enter valid details", Snackbar.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.profileImageView)
+  private boolean validation(String userName, String userContactNumber, int userAge, String userBloodGroup) {
+    if (TextUtils.isEmpty(userName)) {
+      Snackbar.make(profilePictureImageView, "Please enter a valid username", Snackbar.LENGTH_SHORT).show();
+      return false;
+    } else if (TextUtils.isEmpty(userContactNumber) || !TextUtils.isDigitsOnly(userContactNumber)) {
+      Snackbar.make(profilePictureImageView, "Please enter a valid contact number", Snackbar.LENGTH_SHORT).show();
+      return false;
+    } else if (userAge>0 && userAge<100) {
+      Snackbar.make(profilePictureImageView, "Please enter a valid age", Snackbar.LENGTH_SHORT).show();
+      return false;
+    } else return true;
+  }
+
+  @OnClick(R.id.profileImageView)
     public void onProfilePictureImageViewPress() {
       Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
       pickIntent.setType("image/*");
