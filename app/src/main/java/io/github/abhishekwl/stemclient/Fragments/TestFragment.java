@@ -216,7 +216,7 @@ public class TestFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        unbinder.unbind();
+        //unbinder.unbind();
         super.onDestroyView();
     }
 }

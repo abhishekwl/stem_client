@@ -1,7 +1,11 @@
 package io.github.abhishekwl.stemclient.Fragments;
 
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -23,6 +27,10 @@ import butterknife.Unbinder;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask.TaskSnapshot;
 import io.github.abhishekwl.stemclient.Helpers.ApiClient;
 import io.github.abhishekwl.stemclient.Helpers.ApiInterface;
 import io.github.abhishekwl.stemclient.Models.User;
@@ -53,6 +61,8 @@ public class ProfileFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private ArrayAdapter<String> stringArrayAdapter;
     private MaterialDialog materialDialog;
+    private static final int RC_PICK_IMAGE = 123;
+    private StorageReference storageReference;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -70,6 +80,7 @@ public class ProfileFragment extends Fragment {
     private void initializeViews() {
         Glide.with(rootView.getContext()).load(R.drawable.logo).into(profilePictureImageView);
         firebaseAuth = FirebaseAuth.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference("users/"+firebaseAuth.getUid()+"/profile_picture.jpg");
         initializeBloodGroupSpinner();
         fetchCurrentUser();
     }
@@ -106,8 +117,8 @@ public class ProfileFragment extends Fragment {
     }
 
     private void renderUserDetails(User user) {
-        if (TextUtils.isEmpty(user.getUserImageUrl())) Glide.with(rootView.getContext()).load(R.drawable.logo).into(profilePictureImageView);
-        else Glide.with(rootView.getContext()).load(user.getUserImageUrl()).into(profilePictureImageView);
+        if (TextUtils.isEmpty(firebaseAuth.getCurrentUser().getPhotoUrl().toString())) Glide.with(rootView.getContext()).load(R.drawable.logo).into(profilePictureImageView);
+        else Glide.with(rootView.getContext()).load(firebaseAuth.getCurrentUser().getPhotoUrl()).into(profilePictureImageView);
         nameEditText.setText(user.getUserName());
         contactNumberEditText.setText(user.getUserContactNumber());
         ageEditText.setText(Integer.toString(user.getUserAge()));
@@ -135,7 +146,7 @@ public class ProfileFragment extends Fragment {
                 .progress(true, 0)
                 .show();
 
-        String userImageUrl = "";   //TODO: Upload Image to Firebase Storage
+        String userImageUrl = (firebaseAuth.getCurrentUser().getPhotoUrl()==null)? "" : firebaseAuth.getCurrentUser().getPhotoUrl().toString();
         String userName = nameEditText.getText().toString();
         String userContactNumber = contactNumberEditText.getText().toString();
         int userAge = Integer.parseInt(ageEditText.getText().toString());
@@ -171,9 +182,52 @@ public class ProfileFragment extends Fragment {
 
     @OnClick(R.id.profileImageView)
     public void onProfilePictureImageViewPress() {
+      Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+      pickIntent.setType("image/*");
+      Intent chooserIntent = Intent.createChooser(pickIntent, "Select Image");
+      chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+      startActivityForResult(chooserIntent, RC_PICK_IMAGE);
     }
 
-    @Override
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode==RC_PICK_IMAGE && resultCode==RESULT_OK && data!=null && data.getData()!=null) uploadImageToFirebaseStorage(data.getData());
+  }
+
+  private void uploadImageToFirebaseStorage(Uri data) {
+    materialDialog = new MaterialDialog.Builder(rootView.getContext())
+      .title(R.string.app_name)
+      .content("Updating profile picture")
+      .progress(true, 0)
+      .show();
+
+    storageReference.putFile(data).addOnCompleteListener(task -> {
+        if (task.isSuccessful()) updateProfilePictureInFirebaseAuth(task.getResult());
+        else {
+          if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
+          Snackbar.make(profilePictureImageView, task.getException().getMessage(), Snackbar.LENGTH_SHORT).show();
+        }
+    });
+  }
+
+  private void updateProfilePictureInFirebaseAuth(TaskSnapshot result) {
+    storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
+      UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
+          .setPhotoUri(uri)
+          .build();
+      firebaseAuth.getCurrentUser().updateProfile(userProfileChangeRequest).addOnFailureListener(
+          e -> {
+            if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
+            Snackbar.make(profilePictureImageView, e.getMessage(), Snackbar.LENGTH_SHORT).show();
+          }).addOnSuccessListener(aVoid -> {
+            if (materialDialog!=null && materialDialog.isShowing()) materialDialog.dismiss();
+            Snackbar.make(profilePictureImageView, "Profile picture updated", Snackbar.LENGTH_SHORT).show();
+          });
+    });
+  }
+
+  @Override
     public void onStart() {
         super.onStart();
         unbinder = ButterKnife.bind(ProfileFragment.this, rootView);
