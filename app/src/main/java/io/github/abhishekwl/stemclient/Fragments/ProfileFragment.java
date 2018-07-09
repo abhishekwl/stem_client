@@ -169,6 +169,10 @@ public class ProfileFragment extends Fragment {
                 });
     }
 
+    @OnClick(R.id.profileImageView)
+    public void onProfilePictureImageViewPress() {
+    }
+
     @Override
     public void onStart() {
         super.onStart();

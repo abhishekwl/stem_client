@@ -180,12 +180,7 @@ public class TestFragment extends Fragment {
       @Override
       protected ArrayList<Test> doInBackground(ArrayList<Test>... arrayLists) {
         ArrayList<Test> filteredList = new ArrayList<>();
-        for (Test test: arrayLists[0]) if (test.isTestSelected()) filteredList.add(test);
-        for (int i=0; i<filteredList.size(); i++) {
-          for (int j=0; j<=i; j++) {
-            if (i!=j && (filteredList.get(i).getTestHospital().getHospitalUid().equals(filteredList.get(j).getTestHospital().getHospitalUid()))) return null;
-          }
-        }
+        for (Test test: arrayLists[0]) if (test.isTestSelected() && isTestFromDifferentHospital(filteredList, test)) filteredList.add(test);
         return filteredList;
       }
 
@@ -202,7 +197,12 @@ public class TestFragment extends Fragment {
       }
     }
 
-    @OnClick(R.id.testsNextButton)
+  private boolean isTestFromDifferentHospital(ArrayList<Test> filteredList, Test test) {
+    for (Test testItem: filteredList) if (testItem.getTestHospital().getHospitalUid().equals(test.getTestHospital().getHospitalUid())) return false;
+    return true;
+  }
+
+  @OnClick(R.id.testsNextButton)
     public void onNextButtonPressed() {
       //noinspection unchecked
       new TestArrayListFilter().execute(testArrayList);

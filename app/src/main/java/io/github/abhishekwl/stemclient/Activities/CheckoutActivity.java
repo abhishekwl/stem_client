@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar.BaseCallback;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import butterknife.BindView;
@@ -25,6 +27,7 @@ import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
 import com.google.firebase.auth.FirebaseAuth;
+import io.github.abhishekwl.stemclient.Adapters.CheckoutRecyclerViewPagerAdapter;
 import io.github.abhishekwl.stemclient.Models.Test;
 import io.github.abhishekwl.stemclient.R;
 import java.util.ArrayList;
@@ -33,7 +36,6 @@ import java.util.Objects;
 
 public class CheckoutActivity extends AppCompatActivity {
 
-  private static final int LOAD_PAYMENT_REQUEST_CODE = 897;
   @BindView(R.id.checkoutRecyclerView)
   RecyclerView checkoutRecyclerView;
   @BindView(R.id.checkoutPayButton)
@@ -43,6 +45,8 @@ public class CheckoutActivity extends AppCompatActivity {
   private ArrayList<Test> testArrayList;
   private FirebaseAuth firebaseAuth;
   private PaymentsClient paymentsClient;
+  private static final int LOAD_PAYMENT_REQUEST_CODE = 897;
+  private CheckoutRecyclerViewPagerAdapter checkoutRecyclerViewPagerAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +72,16 @@ public class CheckoutActivity extends AppCompatActivity {
     else {
       firebaseAuth = FirebaseAuth.getInstance();
       paymentsClient = Wallet.getPaymentsClient(CheckoutActivity.this, new Wallet.WalletOptions.Builder().setEnvironment(WalletConstants.ENVIRONMENT_TEST).build());
+      initializeRecyclerView();
     }
+  }
+
+  private void initializeRecyclerView() {
+    checkoutRecyclerViewPagerAdapter = new CheckoutRecyclerViewPagerAdapter(getApplicationContext(), testArrayList);
+    checkoutRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+    checkoutRecyclerView.setHasFixedSize(true);
+    checkoutRecyclerView.setItemAnimator(new DefaultItemAnimator());
+    checkoutRecyclerView.setAdapter(checkoutRecyclerViewPagerAdapter);
   }
 
   private void isReadyToPay(double totalCost) {
